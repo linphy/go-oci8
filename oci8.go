@@ -19,7 +19,7 @@ import (
 )
 
 func init() {
-	sql.Register("oci8", &OCI8Driver{})
+	sql.Register("oracle", &OCI8Driver{})
 }
 
 type OCI8Driver struct {
