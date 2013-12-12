@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/linphy/goci-dep"
+	_ "github.com/linphy/goracle/godrv"
 	"log"
 	"os"
-	"strconv"
+	//"strconv"
 	"time"
 )
 
@@ -20,8 +20,8 @@ func main() {
 	t := time.Now()
 
 	// 用户名/密码@实例名  跟sqlplus的conn命令类似
-	db, err := sql.Open("goci", "cts/qwer1234@CTS247")
-
+	db, err := sql.Open("goracle", "cts/qwer1234@CTS247")
+	//godrv.SetAutoCommit(true)
 	defer db.Close()
 
 	if err != nil {
@@ -36,29 +36,23 @@ func main() {
 		"'021-'|| trim(to_char(:6, '00000000'))," +
 		"'3504561980' || trim(to_char(:7, '00000000'))," +
 		"64,1.72)"
-	tx, _ := db.Begin()
-	stmt, err := tx.Prepare(insert_string)
+	//tx, _ := db.Begin()
+	stmt, err := db.Prepare(insert_string)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	var res sql.Result
-	for i := 0; i < 10000; i++ {
-		str := strconv.Itoa(i)
-
-		res, err = stmt.Exec(str, str, str, str, int32(i), int32(i), int32(i))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		_, err := res.RowsAffected()
-		if err != nil {
-			log.Fatal(err)
-		}
+	res, err := stmt.Exec("1", "2", "3", "4", int32(5), int32(6), int32(7))
+	if err != nil {
+		log.Fatal(err)
 	}
-	tx.Commit()
-	// lastId, err := res.LastInsertId()
+
+	_, err = res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }

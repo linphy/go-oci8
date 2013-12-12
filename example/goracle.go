@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/linphy/goci-dep"
+	"github.com/linphy/goracle/godrv"
 	"log"
 	"os"
 	"strconv"
@@ -20,8 +20,8 @@ func main() {
 	t := time.Now()
 
 	// 用户名/密码@实例名  跟sqlplus的conn命令类似
-	db, err := sql.Open("goci", "cts/qwer1234@CTS247")
-
+	db, err := sql.Open("goracle", "cts/qwer1234@CTS247")
+	//godrv.SetAutoCommit(true)
 	defer db.Close()
 
 	if err != nil {
@@ -36,6 +36,11 @@ func main() {
 		"'021-'|| trim(to_char(:6, '00000000'))," +
 		"'3504561980' || trim(to_char(:7, '00000000'))," +
 		"64,1.72)"
+	// _, err = db.Exec(insert_string, "888", "888", "888", "888", int32(888), int32(888), int32(888))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	//godrv.SetAutoCommit(false)
 	tx, _ := db.Begin()
 	stmt, err := tx.Prepare(insert_string)
 	if err != nil {
